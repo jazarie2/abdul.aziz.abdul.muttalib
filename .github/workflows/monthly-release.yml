@@ -6,11 +6,12 @@ on:
     - cron: '0 9 1 * *'
   workflow_dispatch: # Allow manual triggering
 
+permissions:
+  contents: write
+
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
       
@@ -31,27 +32,30 @@ jobs:
           TIMESTAMP=$(date +"%Y-%m")
           mv main.pdf "resume-${TIMESTAMP}.pdf"
           echo "RELEASE_FILE=resume-${TIMESTAMP}.pdf" >> $GITHUB_ENV
-          echo "RELEASE_TAG=v${TIMESTAMP}" >> $GITHUB_ENV
-          echo "RELEASE_TITLE=Resume Release ${TIMESTAMP}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=monthly-v${TIMESTAMP}" >> $GITHUB_ENV
+          echo "RELEASE_TITLE=Monthly Resume Release ${TIMESTAMP}" >> $GITHUB_ENV
+          echo "CURRENT_DATE=$(date +"%B %d, %Y")" >> $GITHUB_ENV
           
-      - name: Create Release with PDF
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          CURRENT_DATE=$(date +"%B %d, %Y")
-          gh release create "${{ env.RELEASE_TAG }}" \
-            "${{ env.RELEASE_FILE }}" \
-            --title "${{ env.RELEASE_TITLE }}" \
-            --notes "📄 **Monthly Resume Release**
+      - name: Create/Update Monthly Release with PDF
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_TITLE }}
+          body: |
+            📄 **Monthly Resume Release**
 
-          This is an automatically generated monthly release of the resume PDF.
+            This is an automatically generated monthly release of the resume PDF.
 
-          **Generated on:** ${CURRENT_DATE}
-          **Build ID:** ${{ github.run_id }}
+            **Generated on:** ${{ env.CURRENT_DATE }}
+            **Build ID:** ${{ github.run_id }}
 
-          ### What's included:
-          - 📋 Latest resume in PDF format
-          - 🔄 Auto-generated from LaTeX source
+            ### What's included:
+            - 📋 Latest resume in PDF format
+            - 🔄 Auto-generated from LaTeX source
 
-          ---
-          *This release was automatically created by GitHub Actions*"
+            ---
+            *This release was automatically created by GitHub Actions*
+          artifacts: ${{ env.RELEASE_FILE }}
+          makeLatest: true
+          allowUpdates: true
