@@ -1,16 +1,20 @@
-name: Build and Deploy LaTeX Resume
+name: Build and Release LaTeX Resume
 
 on:
   pull_request:
     branches: [ main ]
   push:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up LaTeX
         uses: dante-ev/latex-action@v2
         with:
@@ -21,32 +25,41 @@ jobs:
             echo "PDF not generated!" && exit 1
           fi
       - name: Upload PDF artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: resume-pdf
           path: main.pdf
+          if-no-files-found: error
 
-  deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  release:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up LaTeX
-        uses: dante-ev/latex-action@v2
+      - name: Download PDF artifact
+        uses: actions/download-artifact@v4
         with:
-          root_file: main.tex
-      - name: Check PDF output
+          name: resume-pdf
+          path: dist
+      - name: Prepare release asset
         run: |
-          if [ ! -f main.pdf ]; then
-            echo "PDF not generated!" && exit 1
-          fi
-      - name: Commit and push PDF and update README
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          mv main.pdf resume.pdf
-          sed -i '/<!-- The PDF will be embedded here by the CI\/CD workflow. -->/a \\n[Download the latest resume (PDF)](./resume.pdf)\\n' README.md
-          git add resume.pdf README.md
-          git commit -m "Update resume PDF and README.md [auto]" || echo "No changes to commit"
-          git push 
+          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          mv dist/main.pdf "dist/resume-${TIMESTAMP}.pdf"
+          echo "ASSET=dist/resume-${TIMESTAMP}.pdf" >> $GITHUB_ENV
+          echo "REL_TAG=build-${{ github.run_id }}" >> $GITHUB_ENV
+          echo "REL_NAME=Automated Resume Build ${TIMESTAMP}" >> $GITHUB_ENV
+      - name: Create prerelease with PDF
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.REL_TAG }}
+          name: ${{ env.REL_NAME }}
+          body: |
+            Automated build from commit ${{ github.sha }}.
+
+            - Branch: ${{ github.ref_name }}
+            - Run ID: ${{ github.run_id }}
+          prerelease: true
+          artifacts: ${{ env.ASSET }}
+          makeLatest: false
+          allowUpdates: true 
