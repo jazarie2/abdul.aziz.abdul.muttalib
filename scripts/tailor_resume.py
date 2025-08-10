@@ -70,13 +70,12 @@ def call_openai_objective(jd_text: str, ctx: str) -> str:
     prompt = PROMPT_TEMPLATE.format(jd=jd_text, ctx=ctx)
 
     resp = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5-mini",
         messages=[
             {"role": "system", "content": "You rewrite resume objectives succinctly and professionally."},
             {"role": "user", "content": prompt},
         ],
-        temperature=0.4,
-        max_tokens=220,
+        max_completion_tokens=220,
     )
     content = resp.choices[0].message.content.strip()
     # clean LaTeX-unfriendly unicode if needed
