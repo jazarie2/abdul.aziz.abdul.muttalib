@@ -1,0 +1,131 @@
+# LaTeX Resume Development Rules
+
+## Project Context
+This is a modular LaTeX resume project with:
+- Main document: `main.tex` with personal info definitions and styling
+- Modular sections: separate `.tex` files for each resume section
+- Experience subfolder: detailed experience entries
+- Custom commands for consistent formatting
+- Professional styling with modern LaTeX packages
+
+## LaTeX Best Practices
+
+### Document Structure
+- Always use the existing custom commands for consistency:
+  - `\resumeSubheading{title}{location}{position}{date}` for work experience
+  - `\resumeProject{title}{tech}{date}{description}` for projects
+  - `\resumeSubItem{category:}{description}` for skills and details
+  - `\resumeItem{title}{description}` for general items
+  - `\cvsection{title}` for main section headers
+
+### Formatting Guidelines
+- Use `\vspace{-xmm}` for precise spacing control (already established patterns)
+- Maintain consistent date formats: "YYYY-YYYY" or "Month YYYY - Month YYYY"
+- Use `\textbf{}` for emphasis, `\textit{}` for subtle emphasis
+- Hyperlinks should use the existing `\href{}{}` format with darkblue color
+- Icons should use `\socialicon{}` or `\ieeeicon{}` commands
+
+### Content Organization
+- Keep each section in its own `.tex` file
+- Use the Experience/ subfolder pattern for detailed entries
+- Start each section file with: `\section{\textbf{Section Name}}\vspace{-0.4mm}`
+- End list environments with appropriate commands: `\resumeHeadingSkillEnd`, `\resumeSubHeadingListEnd`, etc.
+
+## Code Completion Suggestions
+
+### Common LaTeX Patterns for Resumes
+```latex
+% Work Experience Entry
+\resumeSubheading
+{Job Title}{Location}
+{Company Name}{Start Date - End Date}
+\resumeItemListStart
+\resumeItem{Achievement:}{Description of accomplishment with metrics}
+\resumeItemListEnd
+
+% Skills Section Entry  
+\resumeSubItem{Skill Category:}{List of relevant skills, tools, technologies}
+
+% Project Entry
+\resumeProject
+{Project Name}{Technologies Used}{Date}{Brief Description}
+\resumeItemListStart
+\resumeItem{Feature:}{Description of key feature or achievement}
+\resumeItemListEnd
+```
+
+### Package Imports (if adding new features)
+- Always check if package is already imported in main.tex
+- Place new imports after existing ones, before `\begin{document}`
+- Common useful packages: `booktabs`, `array`, `longtable`, `microtype`
+
+### Custom Commands Usage
+- Use existing font commands: `\headerfonti` through `\headerfontx`
+- Color definitions should use `\definecolor{name}{RGB}{r,g,b}`
+- Maintain the established spacing patterns with `\vspace{}`
+
+## Error Prevention
+
+### Common LaTeX Resume Mistakes
+- Don't use raw `\section{}` - always use `\section{\textbf{title}}`
+- Don't forget `\vspace{-0.4mm}` after section headers
+- Don't mix different list environments within the same section
+- Don't forget to close list environments properly
+- Don't use hardcoded spacing - use the established `\vspace{}` patterns
+
+### Package Conflicts
+- Be cautious with font packages - the document uses `cfr-lm` and `fontenc`
+- Hyperref is already configured - don't reconfigure
+- The document uses `tcolorbox` for section styling
+
+### File Organization
+- Keep modular structure: each section in separate file
+- Use `\input{}` not `\include{}` for section files
+- Maintain consistent naming: hyphenated, title-case file names
+- Place detailed entries in subfolders when appropriate
+
+## Content Guidelines
+
+### Professional Writing
+- Use action verbs: "Developed", "Implemented", "Led", "Designed"
+- Include quantifiable achievements when possible
+- Keep bullet points concise but descriptive
+- Use parallel structure in lists
+- Avoid personal pronouns (I, me, my)
+
+### Technical Content
+- Group related technologies logically
+- Use official product names and proper capitalization
+- Include version numbers for significant tools/frameworks
+- Balance technical depth with readability
+
+### Contact Information
+- Update personal info in the definition section at top of main.tex
+- Use consistent formatting for all contact methods
+- Ensure all links are functional and professional
+
+## Debugging Tips
+
+### Common Issues
+- If spacing looks off, check for missing `\vspace{}` commands
+- If formatting breaks, ensure list environments are properly closed
+- If compilation fails, check for unescaped special characters
+- If fonts look wrong, verify the header font selection
+
+### Testing Recommendations
+- Compile frequently to catch errors early
+- Check PDF output for proper spacing and alignment
+- Verify all hyperlinks work correctly
+- Test with different PDF viewers for consistency
+
+## AI Assistant Guidance
+
+When working on this LaTeX resume:
+1. Always maintain the established modular structure
+2. Use existing custom commands rather than creating new ones
+3. Follow the spacing and formatting patterns already established
+4. Keep content professional and quantifiable
+5. Ensure all changes compile successfully
+6. Preserve the clean, modern aesthetic of the current design
+
+Remember: This resume uses a sophisticated custom styling system. Work within the established patterns rather than fighting against them.

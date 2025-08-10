@@ -14,4 +14,7 @@
 *.nav
 *.snm
 *.vrb
-*.xdv 
+*.xdv
+# Tailored outputs
+/tailored/
+ 
