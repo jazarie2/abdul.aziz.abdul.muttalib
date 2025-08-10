@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up LaTeX
-        uses: dante-ev/latex-action
+        uses: dante-ev/latex-action@latest
         with:
           root_file: main.tex
       - name: Check PDF output
@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up LaTeX
-        uses: dante-ev/latex-action@2023-A
+        uses: dante-ev/latex-action@latest
         with:
           root_file: main.tex
       - name: Check PDF output
