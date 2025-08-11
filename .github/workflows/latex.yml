@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up LaTeX
-        uses: dante-ev/latex-action@v2
+        uses: dante-ev/latex-action@latest
         with:
           root_file: main.tex
           latexmk_use_lualatex: true
