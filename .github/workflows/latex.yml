@@ -24,6 +24,19 @@ jobs:
           if [ ! -f main.pdf ]; then
             echo "PDF not generated!" && exit 1
           fi
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Generate README from LaTeX
+        run: python3 scripts/generate_readme.py
+      - name: Copy PDF to stable name
+        run: cp main.pdf resume.pdf
+      - name: Commit updated README and PDF
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update README and resume.pdf from latest build"
+          file_pattern: README.md resume.pdf
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
