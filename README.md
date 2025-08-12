@@ -112,7 +112,7 @@ _Process Engineer - Epoxy Molding Compound (EMC)_  —  _Penang, Malaysia_
 
    Cisco, San Jose, California, United States
 
-   Email: muhamad.khairulnizam.jaapar@intel.com
+   Email: gchew@cisco.com
 
    Phone: +1-408-893-1352
 
